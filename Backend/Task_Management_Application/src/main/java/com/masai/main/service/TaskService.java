@@ -14,7 +14,7 @@ public interface TaskService {
 	
 	public List<Task> getAllTasks() throws TaskException;
 	
-	public Task getTaskById(Integer id) throws TaskException;
+	public Task getTaskById(Long id) throws TaskException;
 	
 	public List<Task> getTasksByAssignee(UserEntity assignee) throws TaskException;
 
