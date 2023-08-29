@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.masai.main.entity.Task;
 import com.masai.main.entity.UserEntity;
 import com.masai.main.exception.TaskException;
+import com.masai.main.exception.UserException;
 import com.masai.main.repository.TaskRepository;
+import com.masai.main.repository.UserRepository;
 import com.masai.main.request.CreateTaskRequest;
 import com.masai.main.service.TaskService;
 
@@ -21,11 +23,28 @@ public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
-	public Task createTask(CreateTaskRequest request) {
+	public Task createTask(CreateTaskRequest request) throws UserException {
 		
-		return null;
+		Task task = new Task();
+		task.setTitle(request.getTitle());
+		task.setDescription(request.getDescription());
+		task.setCompleted(false);
+		task.setDueDate(request.getDueDate());
+		
+		UserEntity assignee = null;
+		
+		if(request.getAssigneeEmail() != null && !request.getAssigneeEmail().isEmpty()) {
+			assignee = userRepository.findByEmail(request.getAssigneeEmail()).orElseThrow(() -> 
+			new UserException("Cannot assign this task to a user since no user can be found with this email"+ request.getAssigneeEmail()));
+		}
+		task.setAssignee(assignee);
+		
+		return taskRepository.save(task);
 	}
 
 	@Override

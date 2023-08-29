@@ -1,9 +1,8 @@
 package com.masai.main.request;
 
-import com.masai.main.entity.UserEntity;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +17,7 @@ public class CreateTaskRequest {
 	
     private String title;
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "assignee_id")
-    private UserEntity assignee;
+    private LocalDate dueDate;
+    private String assigneeEmail;
 
 }
