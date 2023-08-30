@@ -3,7 +3,7 @@ package com.masai.main.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "users")
 public class UserEntity {
 	
     @Id
@@ -35,7 +37,8 @@ public class UserEntity {
     
     @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
     private List<Task> assignedTasks = new ArrayList<>();
 

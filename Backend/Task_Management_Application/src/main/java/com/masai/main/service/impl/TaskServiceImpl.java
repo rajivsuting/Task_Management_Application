@@ -13,6 +13,7 @@ import com.masai.main.exception.UserException;
 import com.masai.main.repository.TaskRepository;
 import com.masai.main.repository.UserRepository;
 import com.masai.main.request.CreateTaskRequest;
+import com.masai.main.request.UpdateTaskRequest;
 import com.masai.main.service.TaskService;
 
 
@@ -51,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
 	public List<Task> getAllTasks() throws TaskException {
 		
 		List<Task> tasks = taskRepository.findAll();
-		if(tasks.isEmpty()) throw new TaskException("Task not found in the database.");
+		if(tasks.isEmpty()) throw new TaskException("Tasks not found in the database.");
 		
 		return tasks;
 	}
@@ -67,9 +68,67 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public List<Task> getTasksByAssignee(UserEntity assignee) throws TaskException {
+	public List<Task> getTasksByAssigneeEmail(String email) throws TaskException, UserException {
 		
-		return null;
+		UserEntity assignee = userRepository.findByEmail(email).orElseThrow(() -> new UserException("No user found with email "+email));
+		
+		List<Task> allTasks = assignee.getAssignedTasks();
+		
+		if(allTasks.isEmpty()) throw new TaskException("No task found for this user");
+		
+		return allTasks;
 	}
+
+	@Override
+	public String deleteTask(Long id) throws TaskException {
+		
+		Task existingTask = taskRepository.findById(id).orElseThrow(() ->
+			new TaskException("Task not found with id "+id)
+		);
+		
+		taskRepository.delete(existingTask);
+		return existingTask.getTitle() + " is deleted successfully.";
+	}
+
+	@Override
+	public Task updateTask(Long id, UpdateTaskRequest request) throws TaskException {
+		
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskException("Task not found with ID: " + id));
+
+
+        existingTask.setTitle(request.getTitle());
+        existingTask.setDescription(request.getDescription());
+        existingTask.setDueDate(request.getDueDate());
+        
+        return taskRepository.save(existingTask);
+	}
+
+	@Override
+	public String assignUserToTask(Long taskId, Long userId) throws UserException, TaskException {
+		
+	        Task task = taskRepository.findById(taskId)
+	                .orElseThrow(() -> new TaskException("Task not found with ID: " + taskId));
+
+	        UserEntity user = userRepository.findById(userId)
+	                .orElseThrow(() -> new UserException("User not found with ID: " + userId));
+
+	        task.setAssignee(user);
+	        taskRepository.save(task);
+
+	        return "Task assigned to "+user.getName()+ " successfully.";
+	    
+	}
+
+	@Override
+	public Task markTaskCompleted(Long id) throws TaskException {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskException("Task not found with ID: " + id));
+
+        task.setCompleted(true);
+        return taskRepository.save(task);
+	}
+	
+	
 
 }
