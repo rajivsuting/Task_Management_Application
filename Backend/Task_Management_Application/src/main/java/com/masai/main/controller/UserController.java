@@ -3,6 +3,7 @@ package com.masai.main.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.masai.main.entity.UserEntity;
 import com.masai.main.exception.UserException;
+import com.masai.main.request.RegistrationRequest;
 import com.masai.main.service.UserService;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 	
 	
@@ -22,9 +25,9 @@ public class UserController {
 	
 	
 	@PostMapping("/register")
-	public ResponseEntity<UserEntity> registerUser(@RequestBody UserEntity user) throws UserException{
+	public ResponseEntity<UserEntity> registerUser(@RequestBody RegistrationRequest request) throws UserException{
 		
-		return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+		return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
 	}
 
 }

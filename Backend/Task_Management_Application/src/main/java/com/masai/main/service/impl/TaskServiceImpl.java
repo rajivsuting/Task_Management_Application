@@ -1,5 +1,7 @@
 package com.masai.main.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,7 @@ public class TaskServiceImpl implements TaskService {
 		task.setDescription(request.getDescription());
 		task.setCompleted(false);
 		task.setDueDate(request.getDueDate());
+		task.setCreatedDate(LocalDate.now());
 		
 		UserEntity assignee = null;
 		

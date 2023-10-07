@@ -2,6 +2,7 @@ package com.masai.main.entity;
 
 import java.time.LocalDate;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +30,7 @@ public class Task {
     private String description;
     private boolean completed;
     private LocalDate dueDate;
+    private LocalDate createdDate;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")
